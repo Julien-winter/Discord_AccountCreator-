@@ -8,3 +8,5 @@ data/checker_proxies.txt
 data/joiner_proxies.txt
 data/names.txt
 .env
+
+push.bat
