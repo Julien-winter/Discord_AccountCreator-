@@ -1,9 +1,8 @@
-# AccountCreator — Realistic Discord Account Creator
+# AccountCreator — Discord Account Creator
 
-> Fast, realistic Discord account creator. Generates human-like usernames (like `maskierter.`, `z5087z`, `tjardan97`) — Supports firstmail + cheap solver split.
+> Fast Discord account creator — Supports firstmail + cheap solver split.
 
 ## Features
-- **Realistic usernames** — mimics real Discord joins (`lsd.6`, `costazzz.z`, `97b27`, `hyper123...`, `tungtung...`) from wordlist + digits/dot, not random gibberish
 - **Account creator** — `imap.firstmail.ltd` verification, `zrx` for register + cheap `89.167.31.16:5000` for verify, firstmail support, proxy-verified
 - **Smart logs** — `[HH:MM:SS] [1/3] mail@... | Solving captcha (12.3s)` with proxy, duration, field errors
 
@@ -39,7 +38,6 @@ MAIL_IMAP_HOST = "imap.firstmail.ltd"        # for firstmail
 ```
 data/mails.txt              # email:password per line (firstmail)
 data/joiner_proxies.txt     # creator proxies (user:pass@ip:port)
-data/names.txt              # realistic names (optional, auto-generated)
 ```
 
 ### 3. Create Accounts
