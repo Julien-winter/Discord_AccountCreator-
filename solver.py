@@ -25,6 +25,73 @@ def has_solver() -> bool:
     return False
 
 
+async def solve_mail_verify(sitekey: str, rqdata: str | None, pageurl: str = "https://discord.com/", proxy: str | None = None) -> str | None:
+    """Mail-verify solver (89.167.31.16:5000) — cheap."""
+    import time as _time
+    key = (getattr(config, "MAIL_VERIFY_SOLVER_KEY", "") or "").strip()
+    host = (getattr(config, "MAIL_VERIFY_SOLVER_HOST", "http://89.167.31.16:5000") or "http://89.167.31.16:5000").strip().rstrip("/")
+    if not key or not sitekey:
+        return None
+    domain = pageurl.split("//")[-1].split("/")[0] if pageurl else "discord.com"
+    formatted_proxy = ""
+    if proxy:
+        p = proxy.strip()
+        if not p.startswith("http"):
+            formatted_proxy = f"http://{p}"
+        else:
+            formatted_proxy = p
+    payload = {
+        "sitekey": sitekey,
+        "siteurl": f"https://{domain}",
+        "rqdata": rqdata or "",
+        "proxy": formatted_proxy,
+        "groq_api_key": key,
+    }
+    # endpoint is /solve per docs.html, host already includes port
+    for attempt in range(3):
+        try:
+            async with aiohttp.ClientSession(trust_env=False) as s:
+                async with s.post(
+                    f"{host}/solve",
+                    json=payload,
+                    headers={"Content-Type": "application/json", "X-API-Key": key},
+                    timeout=aiohttp.ClientTimeout(total=125),
+                ) as r:
+                    try:
+                        data = await r.json()
+                    except Exception:
+                        # may return plain string token
+                        try:
+                            txt = await r.text()
+                            if txt and txt.startswith("P1_"):
+                                return txt.strip()
+                        except Exception:
+                            pass
+                        data = {}
+                    if isinstance(data, str) and data.startswith("P1_"):
+                        return data
+                    if isinstance(data, dict):
+                        if data.get("success") and data.get("token"):
+                            return data["token"]
+                        # docs: direct token string on success, else {"errors":...}
+                        tok = data.get("token") or data.get("solution") or data.get("captcha_key")
+                        if isinstance(tok, str) and tok.startswith("P1_"):
+                            return tok
+                    # if returned errors dict, retry
+                    if isinstance(data, dict) and data.get("errors"):
+                        await asyncio.sleep(2)
+                        continue
+                    # fallback: if we got any string token
+                    if isinstance(data, dict):
+                        for v in data.values():
+                            if isinstance(v, str) and v.startswith("P1_"):
+                                return v
+        except Exception:
+            await asyncio.sleep(2)
+            continue
+    return None
+
+
 async def check_balance() -> int | None:
     """Check solver balance. Returns credits or None if unavailable."""
     return None

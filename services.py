@@ -2127,9 +2127,13 @@ async def _create_one_account(mailbox, proxy, solver, sess, sem,
                                     auth_token = new_tok
                                     result["token"] = auth_token
                                     headers["authorization"] = auth_token
-                            elif vr_json.get("captcha_sitekey") and vr_json.get("captcha_rqdata") and solver:
+                            elif vr_json.get("captcha_sitekey") and vr_json.get("captcha_rqdata"):
                                 try:
-                                    vsolved = await solver(vr_json["captcha_sitekey"], vr_json["captcha_rqdata"],
+                                    from solver import solve_mail_verify as _solve_mail
+                                    vsolved = await _solve_mail(vr_json["captcha_sitekey"], vr_json["captcha_rqdata"],
+                                                          "https://discord.com/", proxy)
+                                    if not vsolved and solver:
+                                        vsolved = await solver(vr_json["captcha_sitekey"], vr_json["captcha_rqdata"],
                                                           "https://discord.com/", proxy)
                                 except TypeError:
                                     vsolved = await solver(vr_json["captcha_sitekey"], vr_json["captcha_rqdata"],

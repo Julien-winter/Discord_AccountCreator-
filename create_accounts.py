@@ -51,9 +51,9 @@ async def main():
     def sample(name, res, error=None):
         nonlocal created, failed
         STATUS_WORDS = ("Checking", "Preparing", "Warming", "Registering", "Solving", "Retrying", "Waiting", "Verifying")
-        if any(res.startswith(w) for w in STATUS_WORDS):
-            print(f"    {name} -> {res}...")
-        elif res.startswith("FAILED"):
+        if any(w in res for w in STATUS_WORDS):
+            print(f"    {name} -> {res}")
+        elif "FAILED" in res:
             print(f"    {name} -> {res}")
         elif res in ("created", "registered"):
             created += 1
