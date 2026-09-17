@@ -3,7 +3,7 @@
 > Fast Discord account creator — Supports firstmail + cheap solver split.
 
 ## Features
-- **Account creator** — `imap.firstmail.ltd` verification, `zrx` for register + cheap `89.167.31.16:5000` for verify, firstmail support, proxy-verified
+- **Account creator** — `imap.firstmail.ltd` verification, `zrx` (`zrx solver`) for register + verify, firstmail support, proxy-verified
 - **Smart logs** — `[HH:MM:SS] [1/3] mail@... | Solving captcha (12.3s)` with proxy, duration, field errors
 
 ## Referrals (support us)
@@ -12,7 +12,7 @@ If you use these services, please use our referral links — cheaper for you, su
 
 - **Solver (zrx)** — 1 credit per solve, fast: **https://zrxsolver.online/register?ref=P384WsLLhfs**
 - **Proxies (DataImpulse)** — residential, good for Discord: **https://dataimpulse.com/?aff=d65d1bc9-e5c6-44dc-8019-b0af59c435c5**
-- For mail verify we also use the cheap `http://89.167.31.16:5000` (no referral, `MAIL_VERIFY_SOLVER_HOST` in `config.py`)
+- All solves via `zrx` (`zrxsolver.online`)
 
 ## Quick Start
 
@@ -28,8 +28,6 @@ Edit `config.py`:
 
 ```py
 JOIN_SOLVER_KEY = "sk_..._zrxsolver"          # from https://zrxsolver.online/register?ref=P384WsLLhfs
-MAIL_VERIFY_SOLVER_KEY = "65a2b3c..._cheap"   # from http://89.167.31.16:5000
-MAIL_VERIFY_SOLVER_HOST = "http://89.167.31.16:5000"
 MAIL_IMAP_HOST = "imap.firstmail.ltd"        # for firstmail
 ```
 
@@ -62,7 +60,7 @@ Output: `accounts.txt` → `email:password | token`  (also `results/` for checke
 
 ## How it works
 
-Pops `data/mails.txt` (auto-removed after use, stays in `accounts.txt`), gets fingerprint/build/super_properties (`services.py:_create_one_account`), warmup register, real register → `zrx` solve → retry with `captcha_key`+`global_name` → IMAP `imap.firstmail.ltd` poll for `click.discord.com` → token → `solve_mail_verify` (cheap) if needed → `accounts.txt`
+Pops `data/mails.txt` (auto-removed after use, stays in `accounts.txt`), gets fingerprint/build/super_properties (`services.py:_create_one_account`), warmup register, real register → `zrx` solve → retry with `captcha_key`+`global_name` → IMAP `imap.firstmail.ltd` poll for `click.discord.com` → token → `zrx` verify if needed → `accounts.txt`
 
 ## Tips
 
