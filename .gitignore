@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+results/
+accounts.txt
+data/mails.txt
+data/checker_proxies.txt
+data/joiner_proxies.txt
+data/names.txt
+.env
